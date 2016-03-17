@@ -51,6 +51,15 @@ if (noCache) {
 const appSourceCacheKey = `rp-${cacheKey}-source`;
 const schemaSourceCacheKey = `rp-${cacheKey}-schema`;
 
+// Remove Facebook copyright
+function stripHeader(source) {
+  var loc = source.indexOf('*/');
+  if (loc === -1) {
+    return;
+  }
+  return source.substr(loc + '*/'.length).trim();
+}
+
 let initialAppSource;
 let initialSchemaSource;
 const storedAppSource = localStorage.getItem(appSourceCacheKey);
@@ -75,7 +84,7 @@ if (noCache) {
   } else if (storedAppSource != null) {
     initialAppSource = storedAppSource;
   } else {
-    initialAppSource = require('!raw!./HelloApp');
+    initialAppSource = stripHeader(require('!raw!./HelloApp'));
   }
   if (queryParams.schema != null) {
     initialSchemaSource = queryParams.schema;
@@ -83,7 +92,7 @@ if (noCache) {
   } else if (storedSchemaSource != null) {
     initialSchemaSource = storedSchemaSource;
   } else {
-    initialSchemaSource = require('!raw!./HelloSchema');
+    initialSchemaSource = stripHeader(require('!raw!./HelloSchema'));
   }
   queryParams = filterObject({
     source: queryParams.source,
